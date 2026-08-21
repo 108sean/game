@@ -1,0 +1,496 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>흑백 요리사 - 재료 조합 요리 연구소</title>
+  <style>
+    :root {
+      --bg-dark: #121212;
+      --card-dark: #1e1e1e;
+      --border-dark: #333333;
+      --text-white: #ffffff;
+      --text-gray: #aaaaaa;
+      --accent-white: #ffffff;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    }
+
+    body {
+      background-color: var(--bg-dark);
+      color: var(--text-white);
+      display: flex;
+      justify-content: center;
+      padding: 40px 20px;
+      min-height: 100vh;
+    }
+
+    .container {
+      width: 100%;
+      max-width: 800px;
+      display: flex;
+      flex-direction: column;
+      gap: 32px;
+    }
+
+    /* Header */
+    header {
+      text-align: center;
+      border-bottom: 2px solid var(--border-dark);
+      padding-bottom: 24px;
+    }
+
+    h1 {
+      font-size: 2.5rem;
+      font-weight: 900;
+      letter-spacing: -1px;
+      margin-bottom: 12px;
+      text-transform: uppercase;
+    }
+
+    .subtitle {
+      font-size: 1.2rem;
+      color: var(--text-gray);
+    }
+
+    .counter {
+      margin-top: 10px;
+      font-weight: bold;
+      font-size: 1.1rem;
+      color: #fff;
+    }
+
+    /* Ingredient Grid */
+    .ingredient-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+      gap: 16px;
+    }
+
+    .ingredient-btn {
+      background-color: var(--card-dark);
+      border: 2px solid var(--border-dark);
+      border-radius: 12px;
+      padding: 20px 12px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 8px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      color: var(--text-white);
+    }
+
+    .ingredient-btn .emoji {
+      font-size: 2.2rem;
+    }
+
+    .ingredient-btn .name {
+      font-size: 1.1rem;
+      font-weight: 700;
+    }
+
+    .ingredient-btn:hover {
+      border-color: var(--text-white);
+    }
+
+    .ingredient-btn.selected {
+      background-color: var(--text-white);
+      color: var(--bg-dark);
+      border-color: var(--text-white);
+    }
+
+    /* Action Bar */
+    .action-bar {
+      display: flex;
+      justify-content: center;
+    }
+
+    .submit-btn {
+      background-color: var(--text-white);
+      color: var(--bg-dark);
+      border: none;
+      padding: 16px 40px;
+      font-size: 1.2rem;
+      font-weight: 800;
+      border-radius: 30px;
+      cursor: pointer;
+      transition: transform 0.1s ease, opacity 0.2s ease;
+    }
+
+    .submit-btn:disabled {
+      opacity: 0.3;
+      cursor: not-allowed;
+    }
+
+    .submit-btn:not(:disabled):active {
+      transform: scale(0.98);
+    }
+
+    /* Result View */
+    .result-section {
+      display: none;
+      flex-direction: column;
+      gap: 24px;
+    }
+
+    .result-card {
+      background-color: var(--card-dark);
+      border: 2px solid var(--text-white);
+      border-radius: 16px;
+      padding: 28px;
+    }
+
+    .result-card.pairing {
+      border: 1px dashed var(--text-gray);
+      background-color: #161616;
+    }
+
+    .badge {
+      display: inline-block;
+      background-color: var(--text-white);
+      color: var(--bg-dark);
+      font-size: 0.9rem;
+      font-weight: 800;
+      padding: 4px 12px;
+      border-radius: 12px;
+      margin-bottom: 16px;
+      text-transform: uppercase;
+    }
+
+    .badge.pairing-badge {
+      background-color: transparent;
+      color: var(--text-white);
+      border: 1px solid var(--text-white);
+    }
+
+    .dish-header {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      margin-bottom: 16px;
+    }
+
+    .dish-emoji {
+      font-size: 3.5rem;
+    }
+
+    .dish-title {
+      font-size: 1.8rem;
+      font-weight: 800;
+    }
+
+    .recipe-steps {
+      color: #dddddd;
+      font-size: 1.1rem;
+      line-height: 1.7;
+      margin-top: 12px;
+      padding-left: 20px;
+    }
+
+    .reset-btn {
+      background-color: transparent;
+      color: var(--text-white);
+      border: 2px solid var(--text-white);
+      padding: 16px 40px;
+      font-size: 1.2rem;
+      font-weight: 800;
+      border-radius: 30px;
+      cursor: pointer;
+      align-self: center;
+      margin-top: 16px;
+      transition: background-color 0.2s ease, color 0.2s ease;
+    }
+
+    .reset-btn:hover {
+      background-color: var(--text-white);
+      color: var(--bg-dark);
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    <header>
+      <h1>흑백 요리사</h1>
+      <p class="subtitle">재료를 선택해 나만의 요리를 완성하세요</p>
+      <div class="counter" id="counter">재료를 선택해주세요 (2~3개)</div>
+    </header>
+
+    <!-- Selection Grid -->
+    <div class="ingredient-grid" id="ingredientGrid"></div>
+
+    <div class="action-bar" id="actionBar">
+      <button class="submit-btn" id="submitBtn" disabled>요리 시작하기</button>
+    </div>
+
+    <!-- Result Area -->
+    <div class="result-section" id="resultSection">
+      
+      <!-- Main Dish -->
+      <div class="result-card">
+        <span class="badge">메인 추천 요리</span>
+        <div class="dish-header">
+          <span class="dish-emoji" id="mainEmoji">🍳</span>
+          <h2 class="dish-title" id="mainTitle">요리 이름</h2>
+        </div>
+        <ol class="recipe-steps" id="mainRecipe"></ol>
+      </div>
+
+      <!-- Pairing Dish -->
+      <div class="result-card pairing">
+        <span class="badge pairing-badge">궁합이 좋은 보조 요리</span>
+        <div class="dish-header">
+          <span class="dish-emoji" id="pairEmoji">🥗</span>
+          <h2 class="dish-title" id="pairTitle">요리 이름</h2>
+        </div>
+        <ol class="recipe-steps" id="pairRecipe"></ol>
+      </div>
+
+      <button class="reset-btn" id="resetBtn">다시 고르기</button>
+    </div>
+  </div>
+
+  <script>
+    // 16가지 재료 데이터
+    const ingredients = [
+      { id: 'pork', name: '돼지고기', emoji: '🥩' },
+      { id: 'beef', name: '소고기', emoji: '🍖' },
+      { id: 'chicken', name: '닭고기', emoji: '🍗' },
+      { id: 'shrimp', name: '새우', emoji: '🦐' },
+      { id: 'egg', name: '계란', emoji: '🥚' },
+      { id: 'tofu', name: '두부', emoji: '🫘' },
+      { id: 'kimchi', name: '김치', emoji: '🥬' },
+      { id: 'onion', name: '양파', emoji: '🧅' },
+      { id: 'garlic', name: '마늘', emoji: '🧄' },
+      { id: 'mushroom', name: '버섯', emoji: '🍄' },
+      { id: 'cheese', name: '치즈', emoji: '🧀' },
+      { id: 'rice', name: '밥', emoji: '🍚' },
+      { id: 'noodle', name: '면', emoji: '🍜' },
+      { id: 'potato', name: '감자', emoji: '🥔' },
+      { id: 'chili', name: '고추', emoji: '🌶️' },
+      { id: 'tomato', name: '토마토', emoji: '🍅' }
+    ];
+
+    // 대표 조합 레시피 Database
+    const recipes = [
+      {
+        keys: ['pork', 'kimchi'],
+        main: {
+          name: "돼지김치찌개",
+          emoji: "🥘",
+          recipe: [
+            "돼지고기를 참기름과 마늘에 살짝 볶아 고소한 기름을 냅니다.",
+            "잘 익은 김치를 넣고 함께 볶다가 쌀뜸물을 부어 푹 끓입니다.",
+            "두부와 대파를 넣고 국물이 자작해질 때까지 푹 졸여 완성합니다."
+          ]
+        },
+        pair: {
+          name: "포슬포슬 계란찜",
+          emoji: "🍲",
+          recipe: [
+            "계란에 물과 소금을 넣고 잘 풀어 체에 한 번 거릅니다.",
+            "약불에서 뚝배기에 뚜껑을 덮고 몽글몽글하게 익혀냅니다."
+          ]
+        }
+      },
+      {
+        keys: ['egg', 'rice'],
+        main: {
+          name: "황금 계란볶음밥",
+          emoji: "🍛",
+          recipe: [
+            "달군 팬에 기름을 두르고 파를 볶아 파기름을 만듭니다.",
+            "계란을 풀어 몽글하게 익힌 뒤 밥을 넣고 센 불에 볶습니다.",
+            "굴소스나 간장으로 간을 맞춰 고소하게 완성합니다."
+          ]
+        },
+        pair: {
+          name: "매콤한 떡볶이",
+          emoji: "🍢",
+          recipe: [
+            "고추장, 설탕, 간장 양념을 물에 풀고 끓입니다.",
+            "떡과 어묵을 넣고 국물이 자작해질 때까지 졸입니다."
+          ]
+        }
+      },
+      {
+        keys: ['noodle', 'cheese'],
+        main: {
+          name: "치즈 라면파스타",
+          emoji: "🍝",
+          recipe: [
+            "면을 적당히 삶아낸 뒤 물을 자작하게 남깁니다.",
+            "치즈와 면수를 섞어 부드럽고 꾸덕한 소스를 만듭니다.",
+            "후추를 뿌려 풍미를 살려 그릇에 담아냅니다."
+          ]
+        },
+        pair: {
+          name: "상큼한 토마토 샐러드",
+          emoji: "🥗",
+          recipe: [
+            "토마토를 먹기 좋은 크기로 슬라이스합니다.",
+            "올리브유와 발사믹 식초를 뿌려 가볍게 완성합니다."
+          ]
+        }
+      },
+      {
+        keys: ['beef', 'onion'],
+        main: {
+          name: "소고기 찹스테이크",
+          emoji: "🥩",
+          recipe: [
+            "소고기와 양파를 한 입 크기로 큼직하게 썹니다.",
+            "달군 팬에 소고기를 강불로 빠르게 볶아 육즙을 잡습니다.",
+            "양파와 돈가스 소스를 넣고 센 불에서 감칠맛 나게 볶아냅니다."
+          ]
+        },
+        pair: {
+          name: "매쉬드 포테이토",
+          emoji: "🥔",
+          recipe: [
+            "감자를 삶아 뜨거울 때 버터와 함께 부드럽게 으깹니다.",
+            "소금과 우유로 간을 맞춰 부드럽게 곁들입니다."
+          ]
+        }
+      }
+    ];
+
+    // 기본 레시피 (특정 조합이 없을 때 출력)
+    const fallbackRecipe = {
+      main: {
+        name: "모둠 재료 특제 볶음요리",
+        emoji: "🍳",
+        recipe: [
+          "선택한 재료들을 먹기 좋은 크기로 균일하게 듬성듬성 썹니다.",
+          "팬에 마늘과 기름을 두르고 딱딱한 재료부터 순서대로 볶습니다.",
+          "간장이나 소금으로 간을 하고 마지막에 후추를 뿌려 완성합니다."
+        ]
+      },
+      pair: {
+        name: "시원한 맑은 장국",
+        emoji: "🥣",
+        recipe: [
+          "멸치 다시마 육수를 깔끔하게 우려냅니다.",
+          "소금과 파를 넣고 살짝 끓여 깔끔하게 곁들입니다."
+        ]
+      }
+    };
+
+    let selectedIngredients = [];
+
+    // Elements
+    const gridEl = document.getElementById('ingredientGrid');
+    const submitBtn = document.getElementById('submitBtn');
+    const resetBtn = document.getElementById('resetBtn');
+    const counterEl = document.getElementById('counter');
+    const actionBar = document.getElementById('actionBar');
+    const resultSection = document.getElementById('resultSection');
+
+    // UI Render
+    function init() {
+      gridEl.innerHTML = '';
+      ingredients.forEach(item => {
+        const btn = document.createElement('button');
+        btn.className = 'ingredient-btn';
+        btn.dataset.id = item.id;
+        btn.innerHTML = `
+          <span class="emoji">${item.emoji}</span>
+          <span class="name">${item.name}</span>
+        `;
+        btn.addEventListener('click', () => toggleSelect(item.id, btn));
+        gridEl.appendChild(btn);
+      });
+    }
+
+    // Toggle Select
+    function toggleSelect(id, element) {
+      if (selectedIngredients.includes(id)) {
+        selectedIngredients = selectedIngredients.filter(i => i !== id);
+        element.classList.remove('selected');
+      } else {
+        if (selectedIngredients.length >= 3) {
+          alert("재료는 최대 3개까지만 고를 수 있습니다.");
+          return;
+        }
+        selectedIngredients.push(id);
+        element.classList.add('selected');
+      }
+
+      updateUI();
+    }
+
+    function updateUI() {
+      const count = selectedIngredients.length;
+      counterEl.textContent = `선택한 재료: ${count}개 (2~3개 선택 가능)`;
+
+      if (count >= 2 && count <= 3) {
+        submitBtn.disabled = false;
+      } else {
+        submitBtn.disabled = true;
+      }
+    }
+
+    // Find Recipe
+    function findRecipe() {
+      const matched = recipes.find(r => 
+        r.keys.every(k => selectedIngredients.includes(k))
+      );
+      return matched || fallbackRecipe;
+    }
+
+    // Show Result
+    submitBtn.addEventListener('click', () => {
+      const dish = findRecipe();
+
+      // Set Main Dish
+      document.getElementById('mainEmoji').textContent = dish.main.emoji;
+      document.getElementById('mainTitle').textContent = dish.main.name;
+      renderSteps('mainRecipe', dish.main.recipe);
+
+      // Set Pair Dish
+      document.getElementById('pairEmoji').textContent = dish.pair.emoji;
+      document.getElementById('pairTitle').textContent = dish.pair.name;
+      renderSteps('pairRecipe', dish.pair.recipe);
+
+      // Hide Grid, Show Result
+      gridEl.style.display = 'none';
+      actionBar.style.display = 'none';
+      resultSection.style.display = 'flex';
+      counterEl.style.display = 'none';
+    });
+
+    function renderSteps(elementId, steps) {
+      const container = document.getElementById(elementId);
+      container.innerHTML = '';
+      steps.forEach(step => {
+        const li = document.createElement('li');
+        li.textContent = step;
+        container.appendChild(li);
+      });
+    }
+
+    // Reset
+    resetBtn.addEventListener('click', () => {
+      selectedIngredients = [];
+      const btns = document.querySelectorAll('.ingredient-btn');
+      btns.forEach(b => b.classList.remove('selected'));
+
+      updateUI();
+
+      gridEl.style.display = 'grid';
+      actionBar.style.display = 'flex';
+      resultSection.style.display = 'none';
+      counterEl.style.display = 'block';
+    });
+
+    // Start App
+    init();
+  </script>
+</body>
+</html>
