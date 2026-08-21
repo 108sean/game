@@ -3,22 +3,21 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>흑백 요리사 - 블라인드 재료 조합 연구소</title>
+  <title>흑백 요리사 - 리얼 조합 연구소</title>
   <style>
     :root {
-      --bg-dark: #0d0d0d;
-      --card-dark: #1a1a1a;
+      --bg-dark: #0a0a0a;
+      --card-dark: #161616;
       --border-dark: #333333;
       --text-white: #ffffff;
       --text-gray: #aaaaaa;
-      --accent-white: #ffffff;
     }
 
     * {
       box-sizing: border-box;
       margin: 0;
       padding: 0;
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
     }
 
     body {
@@ -49,7 +48,6 @@
       font-weight: 900;
       letter-spacing: -1.5px;
       margin-bottom: 8px;
-      text-transform: uppercase;
     }
 
     .subtitle {
@@ -60,7 +58,7 @@
     .counter {
       margin-top: 14px;
       font-weight: 800;
-      font-size: 1.2rem;
+      font-size: 1.1rem;
       color: #ffffff;
       background: #222;
       display: inline-block;
@@ -89,14 +87,8 @@
       color: var(--text-white);
     }
 
-    .ingredient-btn .emoji {
-      font-size: 2.4rem;
-    }
-
-    .ingredient-btn .name {
-      font-size: 1.1rem;
-      font-weight: 700;
-    }
+    .ingredient-btn .emoji { font-size: 2.4rem; }
+    .ingredient-btn .name { font-size: 1.1rem; font-weight: 700; }
 
     .ingredient-btn:hover {
       border-color: #888888;
@@ -124,16 +116,12 @@
       font-weight: 900;
       border-radius: 40px;
       cursor: pointer;
-      transition: transform 0.1s ease, opacity 0.2s ease;
+      transition: all 0.2s ease;
     }
 
     .submit-btn:disabled {
       opacity: 0.25;
       cursor: not-allowed;
-    }
-
-    .submit-btn:not(:disabled):hover {
-      background-color: #e6e6e6;
     }
 
     .result-section {
@@ -151,7 +139,7 @@
 
     .result-card.pairing {
       border: 1px dashed var(--text-gray);
-      background-color: #141414;
+      background-color: #111;
     }
 
     .badge {
@@ -163,7 +151,6 @@
       padding: 5px 14px;
       border-radius: 12px;
       margin-bottom: 16px;
-      text-transform: uppercase;
     }
 
     .badge.pairing-badge {
@@ -179,15 +166,8 @@
       margin-bottom: 16px;
     }
 
-    .dish-emoji {
-      font-size: 3.8rem;
-    }
-
-    .dish-title {
-      font-size: 1.9rem;
-      font-weight: 900;
-      line-height: 1.3;
-    }
+    .dish-emoji { font-size: 3.8rem; }
+    .dish-title { font-size: 1.8rem; font-weight: 900; line-height: 1.3; }
 
     .recipe-steps {
       color: #e0e0e0;
@@ -197,9 +177,7 @@
       padding-left: 22px;
     }
 
-    .recipe-steps li {
-      margin-bottom: 8px;
-    }
+    .recipe-steps li { margin-bottom: 8px; }
 
     .reset-btn {
       background-color: transparent;
@@ -226,19 +204,17 @@
   <div class="container">
     <header>
       <h1>흑백 요리사</h1>
-      <p class="subtitle">어떤 독특한 조합이든 심사위원의 평가를 받습니다</p>
+      <p class="subtitle">어떤 독특한 3가지 재료도 리얼 요리로 연출합니다</p>
       <div class="counter" id="counter">재료를 2~3개 선택하세요</div>
     </header>
 
     <div class="ingredient-grid" id="ingredientGrid"></div>
 
     <div class="action-bar" id="actionBar">
-      <button class="submit-btn" id="submitBtn" disabled>심사위원에게 제출하기</button>
+      <button class="submit-btn" id="submitBtn" disabled>요리 시작하기</button>
     </div>
 
     <div class="result-section" id="resultSection">
-      
-      <!-- Main Dish -->
       <div class="result-card">
         <span class="badge">메인 완성 요리</span>
         <div class="dish-header">
@@ -248,7 +224,6 @@
         <ol class="recipe-steps" id="mainRecipe"></ol>
       </div>
 
-      <!-- Pairing Dish -->
       <div class="result-card pairing">
         <span class="badge pairing-badge">곁들이는 궁합 요리</span>
         <div class="dish-header">
@@ -264,94 +239,123 @@
 
   <script>
     const ingredients = [
-      { id: 'pork', name: '돼지고기', emoji: '🥩', category: 'meat' },
-      { id: 'beef', name: '소고기', emoji: '🍖', category: 'meat' },
-      { id: 'chicken', name: '닭고기', emoji: '🍗', category: 'meat' },
-      { id: 'shrimp', name: '새우', emoji: '🦐', category: 'seafood' },
-      { id: 'egg', name: '계란', emoji: '🥚', category: 'protein' },
-      { id: 'tofu', name: '두부', emoji: '🫘', category: 'protein' },
-      { id: 'kimchi', name: '김치', emoji: '🥬', category: 'vege' },
-      { id: 'onion', name: '양파', emoji: '🧅', category: 'vege' },
-      { id: 'garlic', name: '마늘', emoji: '🧄', category: 'vege' },
-      { id: 'mushroom', name: '버섯', emoji: '🍄', category: 'vege' },
-      { id: 'cheese', name: '치즈', emoji: '🧀', category: 'dairy' },
-      { id: 'rice', name: '밥', emoji: '🍚', category: 'carb' },
-      { id: 'noodle', name: '면', emoji: '🍜', category: 'carb' },
-      { id: 'potato', name: '감자', emoji: '🥔', category: 'carb' },
-      { id: 'chili', name: '고추', emoji: '🌶️', category: 'spice' },
-      { id: 'tomato', name: '토마토', emoji: '🍅', category: 'vege' }
+      { id: 'pork', name: '돼지고기', emoji: '🥩', type: 'meat' },
+      { id: 'beef', name: '소고기', emoji: '🍖', type: 'meat' },
+      { id: 'chicken', name: '닭고기', emoji: '🍗', type: 'meat' },
+      { id: 'shrimp', name: '새우', emoji: '🦐', type: 'seafood' },
+      { id: 'egg', name: '계란', emoji: '🥚', type: 'base' },
+      { id: 'tofu', name: '두부', emoji: '🫘', type: 'base' },
+      { id: 'kimchi', name: '김치', emoji: '🥬', type: 'sauce' },
+      { id: 'onion', name: '양파', emoji: '🧅', type: 'vege' },
+      { id: 'garlic', name: '마늘', emoji: '🧄', type: 'vege' },
+      { id: 'mushroom', name: '버섯', emoji: '🍄', type: 'vege' },
+      { id: 'cheese', name: '치즈', emoji: '🧀', type: 'sauce' },
+      { id: 'rice', name: '밥', emoji: '🍚', type: 'main' },
+      { id: 'noodle', name: '면', emoji: '🍜', type: 'main' },
+      { id: 'potato', name: '감자', emoji: '🥔', type: 'main' },
+      { id: 'chili', name: '고추', emoji: '🌶️', type: 'sauce' },
+      { id: 'tomato', name: '토마토', emoji: '🍅', type: 'sauce' }
     ];
 
-    // 주요 명품 레시피 데이터베이스
-    const DB = {
-      'kimchi,pork': { title: "흑백 돼지김치짜글이", emoji: "🥘", steps: ["돼지고기와 김치를 듬뿍 썰어 들기름에 달달 볶습니다.", "자작하게 물을 붓고 고추장과 마늘을 풀어 한소끔 졸입니다.", "국물이 찌개와 볶음 사이가 될 때 밥에 얹어 비벼 먹습니다."], pairTitle: "몽글몽글 계란찜", pairEmoji: "🍲", pairSteps: ["계란을 곱게 풀어 소금 간을 한 뒤 뚝배기에 쨉니다.", "약불에서 은근하게 익혀 매콤한 맛을 누그러뜨립니다."] },
-      'kimchi,pork,rice': { title: "불맛 철판 김치제육덮밥", emoji: "🍛", steps: ["돼지고기와 김치, 밥을 센 불에 함께 달달 볶아냅니다.", "판 바닥에 밥을 눌러붙게 해 누룽지 바삭함을 살립니다.", "김가루와 참기름을 두르고 불향을 뿜어내며 완성합니다."], pairTitle: "맑은 콩나물국", pairEmoji: "🥣", pairSteps: ["콩나물을 넣어 시원하게 끓여내고 소금으로 깔끔하게 간합니다.", "차갑게 식혀 덮밥의 매운맛을 잡아줍니다."] },
-      'cheese,kimchi,pork': { title: "치즈 폭탄 김치제육구이", emoji: "🥘", steps: ["돼지고기와 김치를 매콤 달콤하게 철판에 볶아냅니다.", "완성 직전 모짜렐라 치즈를 한가득 올리고 뚜껑을 덮습니다.", "치즈가 늘어나도록 토치로 겉면을 그을려 불맛을 더합니다."], pairTitle: "아삭 쌈채소와 쌈장", pairEmoji: "🥗", pairSteps: ["싱싱한 상추와 깻잎을 깨끗이 씻어 준비합니다.", "치즈 고기를 싸서 느끼함 없이 깔끔하게 즐깁니다."] },
-      'cheese,noodle,tomato': { title: "지중해식 토마토 치즈 파스타", emoji: "🍝", steps: ["면을 알덴테로 삶아내고 토마토 소스와 볶습니다.", "오븐 용기에 담고 치즈를 수북이 올려 200도 오븐에 구워냅니다.", "치즈가 노릇노릇해지면 파슬리를 뿌려 완성합니다."], pairTitle: "마늘 바게트 구이", pairEmoji: "🥖", pairSteps: ["바게트에 버터와 다진 마늘을 발라 오븐에 바삭하게 구웁니다.", "파스타 소스에 찍어 먹으면 절묘한 궁합을 자랑합니다."] },
-      'cheese,potato': { title: "스위스 스타일 락렛 감자치즈전", emoji: "🥞", steps: ["감자를 채썰어 기름을 두르고 바삭하게 채전을 굽습니다.", "그 위에 치즈를 듬뿍 올려 치즈가 쫀득하게 녹아들게 합니다.", "후추와 소금을 뿌려 바삭함과 고소함을 극대화합니다."], pairTitle: "매콤한 고추 피클", pairEmoji: "🫙", pairSteps: ["고추를 새콤달콤한 간장 식초물에 절여 만듭니다.", "치즈전의 느끼함을 싹 잡아주는 필수 밑반찬입니다."] },
-      'garlic,shrimp': { title: "스페인식 감바스 알 아히요", emoji: "🍤", steps: ["올리브유에 편마늘과 페페론치노를 넣고 향을 냅니다.", "손질한 통통한 새우를 넣고 중간 불에서 노릇하게 익힙니다.", "소금과 후추로 간을 하고 올리브유에 진액을 우려냅니다."], pairTitle: "구운 구스통 바게트", pairEmoji: "🥖", pairSteps: ["빵을 겉은 바삭하고 속은 촉촉하게 구워냅니다.", "새우 풍미가 베어든 올리브 오일에 찍어 먹습니다."] },
-      'beef,garlic,mushroom': { title: "프리미엄 찹스테이크와 버섯구이", emoji: "🥩", steps: ["소고기를 한 입 크기로 썰어 마늘 향 기름에 겉면을 바싹 굽습니다.", "버섯과 마늘을 함께 넣고 소스를 부어 강불에 빠르게 볶습니다.", "육즙이 살아있을 때 후추를 뿌려 그릇에 올립니다."], pairTitle: "매쉬드 포테이토", pairEmoji: "🥔", pairSteps: ["삶은 감자에 버터와 우유를 넣어 부드럽게 으깹니다.", "스테이크 소스와 섞어 먹으면 조화가 완성됩니다."] },
-      'chili,garlic,tofu': { title: "사천식 매콤 마파두부", emoji: "🍲", steps: ["두부를 큼직하게 깍둑썰기하여 소금물에 데쳐냅니다.", "마늘과 고추를 기름에 볶아 매콤한 향을 낸 뒤 고추장을 풉니다.", "두부와 전분물을 넣고 자작하게 졸여 매콤 알싸하게 완성합니다."], pairTitle: "고소한 계란 볶음밥", pairEmoji: "🍛", pairSteps: ["밥과 계란을 고슬고슬하게 볶아 간을 최소화합니다.", "마파두부 소스에 비벼 먹으면 극상의 조화를 이룹니다."] }
-    };
+    // 조리 스타일 정의 엔진 (재료 특성에 맞춰 자연스러운 메뉴와 레시피 자동 조합)
+    function generateRecipe(items) {
+      const names = items.map(i => i.name);
+      const types = items.map(i => i.type);
 
-    // 데이터베이스에 없는 특이한/이상한 조합 선택 시 동적 레시피 창작 엔진
-    function generateCreativeRecipe(selectedList) {
-      const names = selectedList.map(i => i.name);
-      
-      let title = "";
-      let emoji = "🍽️";
-      let steps = [];
-      let pairTitle = "";
-      let pairEmoji = "🥣";
-      let pairSteps = [];
+      let main = {};
+      let pair = {};
 
-      if (names.includes('김치') || names.includes('고추')) {
-        title = `[흑백 창작] 매콤 칼칼 ${names.join(' ')} 볶음`;
-        emoji = "🥘";
-        steps = [
-          `팬에 기름을 두르고 ${names[0]}을(를) 센 불에서 빠르게 볶아 향을 냅니다.`,
-          `이어 ${names.slice(1).join('와(과) ')}을(를) 넣고 고춧가루와 간장 특제 양념으로 강하게 볶습니다.`,
-          `재료들의 알싸함과 풍미가 자작하게 어우러지도록 졸여 완성합니다.`
-        ];
-        pairTitle = "담백한 두부 계란국";
-        pairEmoji = "🥣";
-        pairSteps = ["멸치 육수에 두부와 계란을 풀어 깔끔하게 끓입니다.", "매콤하고 자극적인 메인 요리의 맛을 부드럽게 감싸줍니다."];
-      } else if (names.includes('치즈') || names.includes('토마토')) {
-        title = `[흑백 퓨전] 리치 ${names.join(' ')} 오븐구이`;
-        emoji = "🫕";
-        steps = [
-          `${names[0]}와(과) ${names[1]}을(를) 올리브유에 볶아 풍미를 끌어올립니다.`,
-          names[2] ? `${names[2]}을(를) 넣고 버터와 후추로 서양식 향을 살립니다.` : "버터와 통후추를 뿌려 고급스러운 향을 살립니다.",
-          "겉면이 노릇해질 때까지 은근한 불에서 구워 풍성한 맛을 완성합니다."
-        ];
-        pairTitle = "상큼한 프레시 샐러드";
-        pairEmoji = "🥗";
-        pairSteps = ["신선한 채소에 올리브유와 레몬즙을 뿌려 만듭니다.", "묵직하고 리치한 메인 요리의 입안을 깔끔하게 개운하게 해줍니다."];
-      } else if (names.includes('밥') || names.includes('면') || names.includes('감자')) {
-        title = `[흑백 특선] ${names.join(' ')} 볶음 요리`;
-        emoji = "🍛";
-        steps = [
-          `달군 팬에 마늘과 기름을 넣고 ${names[0]}의 겉면을 바삭하게 익힙니다.`,
-          `${names.slice(1).join(' 및 ')}을(를) 한꺼번에 넣고 굴소스와 간장으로 중화풍으로 볶습니다.`,
-          "센 불에서 불맛을 입혀 그릇에 푸짐하게 담아냅니다."
-        ];
-        pairTitle = "새콤한 얼갈이 피클";
-        pairEmoji = "🫙";
-        pairSteps = ["새콤달콤한 식초물에 채소를 살짝 절여냅니다.", "탄수화물 요리의 묵직함을 개운하게 씻어주는 최상의 조화입니다."];
-      } else {
-        title = `[흑백 오마카세] ${names.join(' ')} 셰프 구이`;
-        emoji = "🍳";
-        steps = [
-          `손질한 ${names[0]}와(과) ${names[1]}을(를) 소금, 후추로 간하여 준비합니다.`,
-          names[2] ? `${names[2]}을(를) 가미하여 식감의 풍성함을 극대화합니다.` : "강불에서 속은 촉촉하고 겉은 바삭하게 굽는 '겉바속촉' 기법을 적용합니다.",
-          "셰프의 감각적인 플레이팅으로 정갈하게 담아 심사위원에게 내놓습니다."
-        ];
-        pairTitle = "특제 와사비 간장 소스 & 샐러드";
-        pairEmoji = "🥗";
-        pairSteps = ["알싸한 와사비와 간장을 1:2 비율로 섞어 준비합니다.", "구이 요리의 재료에 살짝 찍어먹어 풍미를 완성합니다."];
+      // 1. 김치/고추 등 매콤한 재료 포함시
+      if (types.includes('sauce') && (names.includes('김치') || names.includes('고추'))) {
+        const core = items.find(i => i.type !== 'sauce') || items[0];
+        const sub = items.find(i => i !== core && i.type !== 'sauce') || items[1] || items[0];
+        
+        main = {
+          title: `스파이시 ${core.name} ${sub.name} 짜글이`,
+          emoji: "🥘",
+          steps: [
+            `${core.name}와(과) ${sub.name}을(를) 먹기 좋은 크기로 썰어 냄비에 바싹 볶습니다.`,
+            `김치와 고추 양념을 넣고 자작하게 물을 부어 센 불에서 푹 졸여냅니다.`,
+            `국물이 빽빽해지면 불을 줄여 진한 매콤함과 깊은 감칠맛을 완성합니다.`
+          ]
+        };
+        pair = {
+          title: "부드러운 계란 푸딩",
+          emoji: "🍲",
+          steps: [
+            "계란에 우유와 소금을 약간 넣어 잘 푼 뒤 체에 곱게 거릅니다.",
+            "약불에서 찜기로 쪄내어 자극적인 매운맛을 달래주는 궁합을 완성합니다."
+          ]
+        };
+      } 
+      // 2. 치즈/토마토 포함 서양식 조합
+      else if (names.includes('치즈') || names.includes('토마토')) {
+        const mainIng = items.find(i => i.name !== '치즈' && i.name !== '토마토') || items[0];
+        
+        main = {
+          title: `오븐 구이 ${mainIng.name} 토마토 치즈 그라탱`,
+          emoji: "🫕",
+          steps: [
+            `${mainIng.name}을(를) 팬에서 올리브유와 함께 노릇하게 1차로 익혀냅니다.`,
+            `토마토 소스 및 치즈를 팬 위에 켜켜이 얹고 오븐에서 180도로 구워냅니다.`,
+            `치즈가 진득하게 녹아내릴 때 통후추를 갈아 풍미를 극대화합니다.`
+          ]
+        };
+        pair = {
+          title: "상큼한 오일 드레싱 샐러드",
+          emoji: "🥗",
+          steps: [
+            "신선한 야채에 올리브유와 레몬즙을 가볍게 두릅니다.",
+            "치즈의 리치함 뒤에 가벼운 산미를 불어넣어 밸런스를 맞춥니다."
+          ]
+        };
+      } 
+      // 3. 면/밥/감자 등 주식류 포함 시
+      else if (types.includes('main')) {
+        const mainIng = items.find(i => i.type === 'main');
+        const sub1 = items.find(i => i !== mainIng) || items[0];
+        const sub2 = items.find(i => i !== mainIng && i !== sub1) || sub1;
+
+        main = {
+          title: `철판 볶음 ${sub1.name} ${sub2.name} ${mainIng.name}`,
+          emoji: "🍳",
+          steps: [
+            `${sub1.name}와(과) ${sub2.name}을(를) 달군 팬에 마늘과 함께 강불로 빠르게 볶습니다.`,
+            `${mainIng.name}을(를) 투하하고 간장 및 굴소스로 속도감 있게 스터프라이합니다.`,
+            `재료 겉면에 불향이 가득 배어들도록 들썩여 한 그릇에 담아냅니다.`
+          ]
+        };
+        pair = {
+          title: "아삭한 모듬 야채 피클",
+          emoji: "🫙",
+          steps: [
+            "채소를 식초, 설탕, 물 동량 비율에 살짝 절여 만듭니다.",
+            "탄수화물 요리의 묵직한 맛을 사각사각하게 잡아줍니다."
+          ]
+        };
+      } 
+      // 4. 고기/새우 중심의 프리미엄 구이/볶음
+      else {
+        main = {
+          title: `셰프 특제 ${names[0]} & ${names[1]} 찹 스테이크`,
+          emoji: "🥩",
+          steps: [
+            `${names[0]}와(과) ${names[1]}을(를) 큼직하게 한 입 크기로 깍둑썰기합니다.`,
+            `달군 팬에 버터를 두르고 고온에서 겉면을 빠르게 구워 육즙을 가둡니다.`,
+            names[2] ? `${names[2]}을(를) 마지막에 넣어 향을 입힌 후 후추로 마무리합니다.` : "스테이크 소스로 자작하게 코팅하여 풍미를 살려냅니다."
+          ]
+        };
+        pair = {
+          title: "알싸한 와사비 마요 딥",
+          emoji: "🥣",
+          steps: [
+            "마요네즈에 생와사비와 레몬즙을 살짝 섞어 소스를 만듭니다.",
+            "진한 요리에 깔끔한 알싸함을 더해 기름진 맛을 완벽히 차단합니다."
+          ]
+        };
       }
 
-      return { title, emoji, steps, pairTitle, pairEmoji, pairSteps };
+      return { main, pair };
     }
 
     let selectedIngredients = [];
@@ -368,7 +372,6 @@
       ingredients.forEach(item => {
         const btn = document.createElement('button');
         btn.className = 'ingredient-btn';
-        btn.dataset.id = item.id;
         btn.innerHTML = `
           <span class="emoji">${item.emoji}</span>
           <span class="name">${item.name}</span>
@@ -384,7 +387,7 @@
         element.classList.remove('selected');
       } else {
         if (selectedIngredients.length >= 3) {
-          alert("재료는 최대 3개까지만 선택할 수 있습니다.");
+          alert("재료는 최대 3개까지만 선택 가능합니다.");
           return;
         }
         selectedIngredients.push(id);
@@ -397,42 +400,20 @@
     function updateUI() {
       const count = selectedIngredients.length;
       counterEl.textContent = `선택한 재료: ${count}개 (2~3개 선택 가능)`;
-
-      if (count >= 2 && count <= 3) {
-        submitBtn.disabled = false;
-      } else {
-        submitBtn.disabled = true;
-      }
-    }
-
-    function getRecipe() {
-      const sortedKeys = [...selectedIngredients].sort().join(',');
-      
-      if (DB[sortedKeys]) {
-        return DB[sortedKeys];
-      }
-
-      for (let key in DB) {
-        const keyArr = key.split(',');
-        if (keyArr.every(k => selectedIngredients.includes(k))) {
-          return DB[key];
-        }
-      }
-
-      const selectedObjs = selectedIngredients.map(id => ingredients.find(item => item.id === id));
-      return generateCreativeRecipe(selectedObjs);
+      submitBtn.disabled = !(count >= 2 && count <= 3);
     }
 
     submitBtn.addEventListener('click', () => {
-      const dish = getRecipe();
+      const selectedObjects = selectedIngredients.map(id => ingredients.find(item => item.id === id));
+      const result = generateRecipe(selectedObjects);
 
-      document.getElementById('mainEmoji').textContent = dish.emoji || "🍳";
-      document.getElementById('mainTitle').textContent = dish.title;
-      renderSteps('mainRecipe', dish.steps);
+      document.getElementById('mainEmoji').textContent = result.main.emoji;
+      document.getElementById('mainTitle').textContent = result.main.title;
+      renderSteps('mainRecipe', result.main.steps);
 
-      document.getElementById('pairEmoji').textContent = dish.pairEmoji;
-      document.getElementById('pairTitle').textContent = dish.pairTitle;
-      renderSteps('pairRecipe', dish.pairSteps);
+      document.getElementById('pairEmoji').textContent = result.pair.emoji;
+      document.getElementById('pairTitle').textContent = result.pair.title;
+      renderSteps('pairRecipe', result.pair.steps);
 
       gridEl.style.display = 'none';
       actionBar.style.display = 'none';
@@ -452,9 +433,7 @@
 
     resetBtn.addEventListener('click', () => {
       selectedIngredients = [];
-      const btns = document.querySelectorAll('.ingredient-btn');
-      btns.forEach(b => b.classList.remove('selected'));
-
+      document.querySelectorAll('.ingredient-btn').forEach(b => b.classList.remove('selected'));
       updateUI();
 
       gridEl.style.display = 'grid';
