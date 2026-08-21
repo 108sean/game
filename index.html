@@ -282,88 +282,68 @@
       { id: 'tomato', name: '토마토', emoji: '🍅', category: 'vege' }
     ];
 
-    // Specific combinations database
+    // 주요 명품 레시피 데이터베이스
     const DB = {
-      // Meat + Kimchi/Chili combos
       'kimchi,pork': { title: "흑백 돼지김치짜글이", emoji: "🥘", steps: ["돼지고기와 김치를 듬뿍 썰어 들기름에 달달 볶습니다.", "자작하게 물을 붓고 고추장과 마늘을 풀어 한소끔 졸입니다.", "국물이 찌개와 볶음 사이가 될 때 밥에 얹어 비벼 먹습니다."], pairTitle: "몽글몽글 계란찜", pairEmoji: "🍲", pairSteps: ["계란을 곱게 풀어 소금 간을 한 뒤 뚝배기에 쨉니다.", "약불에서 은근하게 익혀 매콤한 맛을 누그러뜨립니다."] },
       'kimchi,pork,rice': { title: "불맛 철판 김치제육덮밥", emoji: "🍛", steps: ["돼지고기와 김치, 밥을 센 불에 함께 달달 볶아냅니다.", "판 바닥에 밥을 눌러붙게 해 누룽지 바삭함을 살립니다.", "김가루와 참기름을 두르고 불향을 뿜어내며 완성합니다."], pairTitle: "맑은 콩나물국", pairEmoji: "🥣", pairSteps: ["콩나물을 넣어 시원하게 끓여내고 소금으로 깔끔하게 간합니다.", "차갑게 식혀 덮밥의 매운맛을 잡아줍니다."] },
       'cheese,kimchi,pork': { title: "치즈 폭탄 김치제육구이", emoji: "🥘", steps: ["돼지고기와 김치를 매콤 달콤하게 철판에 볶아냅니다.", "완성 직전 모짜렐라 치즈를 한가득 올리고 뚜껑을 덮습니다.", "치즈가 늘어나도록 토치로 겉면을 그을려 불맛을 더합니다."], pairTitle: "아삭 쌈채소와 쌈장", pairEmoji: "🥗", pairSteps: ["싱싱한 상추와 깻잎을 깨끗이 씻어 준비합니다.", "치즈 고기를 싸서 느끼함 없이 깔끔하게 즐깁니다."] },
-
-      // Cheese / Noodle / Rice / Tomato combos
-      'cheese,noodle,tomato': { title: "지중해식 토마토 치즈 오븐파스타", emoji: "🍝", steps: ["면을 알덴테로 삶아내고 토마토 소스와 볶습니다.", "오븐 용기에 담고 치즈를 수북이 올려 200도 오븐에 구워냅니다.", "치즈가 노릇노릇해지면 파슬리를 뿌려 완성합니다."], pairTitle: "마늘 바게트 구이", pairEmoji: "🥖", pairSteps: ["바게트에 버터와 다진 마늘을 발라 오븐에 바삭하게 구웁니다.", "파스타 소스에 찍어 먹으면 절묘한 궁합을 자랑합니다."] },
+      'cheese,noodle,tomato': { title: "지중해식 토마토 치즈 파스타", emoji: "🍝", steps: ["면을 알덴테로 삶아내고 토마토 소스와 볶습니다.", "오븐 용기에 담고 치즈를 수북이 올려 200도 오븐에 구워냅니다.", "치즈가 노릇노릇해지면 파슬리를 뿌려 완성합니다."], pairTitle: "마늘 바게트 구이", pairEmoji: "🥖", pairSteps: ["바게트에 버터와 다진 마늘을 발라 오븐에 바삭하게 구웁니다.", "파스타 소스에 찍어 먹으면 절묘한 궁합을 자랑합니다."] },
       'cheese,potato': { title: "스위스 스타일 락렛 감자치즈전", emoji: "🥞", steps: ["감자를 채썰어 기름을 두르고 바삭하게 채전을 굽습니다.", "그 위에 치즈를 듬뿍 올려 치즈가 쫀득하게 녹아들게 합니다.", "후추와 소금을 뿌려 바삭함과 고소함을 극대화합니다."], pairTitle: "매콤한 고추 피클", pairEmoji: "🫙", pairSteps: ["고추를 새콤달콤한 간장 식초물에 절여 만듭니다.", "치즈전의 느끼함을 싹 잡아주는 필수 밑반찬입니다."] },
-      'cheese,egg,noodle': { title: "정통 정통 까르보나라 라멘", emoji: "🍜", steps: ["면을 삶아 건지고 열기가 있을 때 노른자와 치즈를 섞습니다.", "꾸덕한 크림 형태가 되도록 면수와 함께 스피디하게 비빕니다.", "통후추를 굵게 빻아 뿌려 풍미를 폭발시킵니다."], pairTitle: "스파이시 타바스코 샐러드", pairEmoji: "🥗", pairSteps: ["양상추와 방울토마토에 매콤한 드레싱을 곁들입니다.", "꾸덕한 파스타의 리치함을 상쾌하게 전환해 줍니다."] },
-
-      // Shrimp combos
       'garlic,shrimp': { title: "스페인식 감바스 알 아히요", emoji: "🍤", steps: ["올리브유에 편마늘과 페페론치노를 넣고 향을 냅니다.", "손질한 통통한 새우를 넣고 중간 불에서 노릇하게 익힙니다.", "소금과 후추로 간을 하고 올리브유에 진액을 우려냅니다."], pairTitle: "구운 구스통 바게트", pairEmoji: "🥖", pairSteps: ["빵을 겉은 바삭하고 속은 촉촉하게 구워냅니다.", "새우 풍미가 베어든 올리브 오일에 찍어 먹습니다."] },
-      'rice,shrimp,tomato': { title: "스페인 리조또 파에야", emoji: "🥘", steps: ["올리브유에 새우와 토마토를 볶다 쌀을 넣고 함께 볶습니다.", "육수를 조금씩 부어가며 쌀알이 씹히도록 은근히 익힙니다.", "바닥에 살짝 누룽지가 생기도록 눌러붙여 풍미를 완성합니다."], pairTitle: "상큼한 샤베트", pairEmoji: "🍧", pairSteps: ["과일 즙을 얼려 입안을 깔끔하게 정리해줍니다.", "감칠맛 넘치는 해산물 요리 뒤 입가심으로 제격입니다."] },
-
-      // Beef / Mushroom combos
       'beef,garlic,mushroom': { title: "프리미엄 찹스테이크와 버섯구이", emoji: "🥩", steps: ["소고기를 한 입 크기로 썰어 마늘 향 기름에 겉면을 바싹 굽습니다.", "버섯과 마늘을 함께 넣고 소스를 부어 강불에 빠르게 볶습니다.", "육즙이 살아있을 때 후추를 뿌려 그릇에 올립니다."], pairTitle: "매쉬드 포테이토", pairEmoji: "🥔", pairSteps: ["삶은 감자에 버터와 우유를 넣어 부드럽게 으깹니다.", "스테이크 소스와 섞어 먹으면 조화가 완성됩니다."] },
-      'beef,noodle': { title: "흑백 우육 볶음면", emoji: "🍜", steps: ["소고기를 채썰어 간장 양념에 재운 뒤 강불에 볶아냅니다.", "삶은 면과 야채를 넣고 간장, 굴소스로 속도감 있게 볶습니다.", "불향이 가득 배어들도록 팬을 들썩여 완성합니다."], pairTitle: "단꼬치 아삭 단무지 무침", pairEmoji: "🥗", pairSteps: ["단무지에 고춧가루와 참기름을 넣어 새콤매콤 무칩니다.", "볶음면의 기름진 맛을 시원하게 잡아줍니다."] },
-
-      // Tofu / Chili combos
-      'chili,garlic,tofu': { title: "사천식 매콤 마파두부", emoji: "🍲", steps: ["두부를 큼직하게 깍둑썰기하여 소금물에 데쳐냅니다.", "마늘과 고추를 기름에 볶아 매콤한 향을 낸 뒤 고추장을 풉니다.", "두부와 전분물을 넣고 자작하게 졸여 매콤 알싸하게 완성합니다."], pairTitle: "고소한 계란 볶음밥", pairEmoji: "🍛", pairSteps: ["밥과 계란을 고슬고슬하게 볶아 간을 최소화합니다.", "마파두부 소스에 비벼 먹으면 극상의 조화를 이룹니다."] },
-      
-      // Chicken combos
-      'cheese,chicken,chili': { title: "화끈한 치즈 불닭 구이", emoji: "🍗", steps: ["닭고기를 고춧가루와 고추장 양념에 재워 양념 구이합니다.", "팬 위에 불닭을 담고 모짜렐라 치즈를 산처럼 쌓아 올립니다.", "치즈가 녹아내릴 때까지 구워 매운맛과 고소함의 균형을 맞춥니다."], pairTitle: "시원한 치킨무 & 콘샐러드", pairEmoji: "🌽", pairSteps: ["옥수수 콘과 마요네즈, 식초를 넣어 상큼하게 버무립니다.", "불닭의 매운 열기를 단번에 식혀줍니다."] },
-      'chicken,potato,tomato': { title: "지중해식 닭고기 토마토 스튜", emoji: "🍲", steps: ["닭고기와 감자를 노릇하게 볶은 뒤 토마토 소스를 붓습니다.", "약불에서 감자가 으깨질 때까지 뭉근하게 20분 이상 끓입니다.", "닭고기 결이 부드럽게 찢어질 때 진한 국물과 함께 담아냅니다."], pairTitle: "호밀빵 슬라이스", pairEmoji: "🍞", pairSteps: ["담백한 호밀빵을 노릇하게 살짝 구워냅니다.", "진한 토마토 스튜 국물에 푹 적셔 먹습니다."] }
+      'chili,garlic,tofu': { title: "사천식 매콤 마파두부", emoji: "🍲", steps: ["두부를 큼직하게 깍둑썰기하여 소금물에 데쳐냅니다.", "마늘과 고추를 기름에 볶아 매콤한 향을 낸 뒤 고추장을 풉니다.", "두부와 전분물을 넣고 자작하게 졸여 매콤 알싸하게 완성합니다."], pairTitle: "고소한 계란 볶음밥", pairEmoji: "🍛", pairSteps: ["밥과 계란을 고슬고슬하게 볶아 간을 최소화합니다.", "마파두부 소스에 비벼 먹으면 극상의 조화를 이룹니다."] }
     };
 
-    // Creative dynamic cooking generator for weird / unlisted combinations
+    // 데이터베이스에 없는 특이한/이상한 조합 선택 시 동적 레시피 창작 엔진
     function generateCreativeRecipe(selectedList) {
       const names = selectedList.map(i => i.name);
-      const categories = selectedList.map(i => i.category);
       
       let title = "";
-      let emoji = "🍳";
+      let emoji = "🍽️";
       let steps = [];
       let pairTitle = "";
       let pairEmoji = "🥣";
       let pairSteps = [];
 
-      const nameStr = names.join(' ');
-
-      // Determine Style
       if (names.includes('김치') || names.includes('고추')) {
-        title = `[흑백 창작] 매콤 칼칼 ${names.join('')} 볶음요리`;
+        title = `[흑백 창작] 매콤 칼칼 ${names.join(' ')} 볶음`;
         emoji = "🥘";
         steps = [
-          `팬에 기름을 두르고 ${names[0]}을(를) 센 불에서 빠르게 볶아 향을 일으킵니다.`,
-          `이어 ${names.slice(1).join('와(과) ')}을(를) 투하하고 고춧가루/간장 특제 양념으로 강하게 볶아냅니다.`,
-          `재료들의 강렬한 풍미가 어우러지도록 자작하게 졸여 그릇에 담아냅니다.`
+          `팬에 기름을 두르고 ${names[0]}을(를) 센 불에서 빠르게 볶아 향을 냅니다.`,
+          `이어 ${names.slice(1).join('와(과) ')}을(를) 넣고 고춧가루와 간장 특제 양념으로 강하게 볶습니다.`,
+          `재료들의 알싸함과 풍미가 자작하게 어우러지도록 졸여 완성합니다.`
         ];
         pairTitle = "담백한 두부 계란국";
         pairEmoji = "🥣";
-        pairSteps = ["멸치 육수에 두부와 계란을 풀어 깔끔하게 끓입니다.", "매콤하고 자극적인 메인 요리의 맛을 부드럽게 완충합니다."];
+        pairSteps = ["멸치 육수에 두부와 계란을 풀어 깔끔하게 끓입니다.", "매콤하고 자극적인 메인 요리의 맛을 부드럽게 감싸줍니다."];
       } else if (names.includes('치즈') || names.includes('토마토')) {
-        title = `[흑백 퓨전] 리치 ${names.join('')} 퓨전 그리탱`;
+        title = `[흑백 퓨전] 리치 ${names.join(' ')} 오븐구이`;
         emoji = "🫕";
         steps = [
-          `${names[0]}와(과) ${names[1]}을(를) 올리브유에 볶아 풍미를 한껏 끌어올립니다.`,
-          names[2] ? `${names[2]}을(를) 넣고 버터와 후추로 풍미를 더한 뒤 그릇에 담습니다.` : "버터와 통후추를 뿌려 고급스러운 서양식 향을 살립니다.",
+          `${names[0]}와(과) ${names[1]}을(를) 올리브유에 볶아 풍미를 끌어올립니다.`,
+          names[2] ? `${names[2]}을(를) 넣고 버터와 후추로 서양식 향을 살립니다.` : "버터와 통후추를 뿌려 고급스러운 향을 살립니다.",
           "겉면이 노릇해질 때까지 은근한 불에서 구워 풍성한 맛을 완성합니다."
         ];
-        pairTitle = "상큼한 프레시 가든 샐러드";
+        pairTitle = "상큼한 프레시 샐러드";
         pairEmoji = "🥗";
         pairSteps = ["신선한 채소에 올리브유와 레몬즙을 뿌려 만듭니다.", "묵직하고 리치한 메인 요리의 입안을 깔끔하게 개운하게 해줍니다."];
       } else if (names.includes('밥') || names.includes('면') || names.includes('감자')) {
-        title = `[흑백 특선] ${names.join('')} 든든한 탄수화물 다이닝`;
+        title = `[흑백 특선] ${names.join(' ')} 볶음 요리`;
         emoji = "🍛";
         steps = [
           `달군 팬에 마늘과 기름을 넣고 ${names[0]}의 겉면을 바삭하게 익힙니다.`,
           `${names.slice(1).join(' 및 ')}을(를) 한꺼번에 넣고 굴소스와 간장으로 중화풍으로 볶습니다.`,
           "센 불에서 불맛을 입혀 그릇에 푸짐하게 담아냅니다."
         ];
-        pairTitle = "아삭한 얼갈이 피클";
+        pairTitle = "새콤한 얼갈이 피클";
         pairEmoji = "🫙";
         pairSteps = ["새콤달콤한 식초물에 채소를 살짝 절여냅니다.", "탄수화물 요리의 묵직함을 개운하게 씻어주는 최상의 조화입니다."];
       } else {
-        title = `[흑백 오마카세] ${names.join(' ')} 셰프 스페셜 구이`;
-        emoji = "🍽️";
+        title = `[흑백 오마카세] ${names.join(' ')} 셰프 구이`;
+        emoji = "🍳";
         steps = [
-          `손질한 ${names[0]}와(과) ${names[1]}을(를) 소금, 후추, 소스로 밑간합니다.`,
-          names[2] ? `${names[2]}을(를) 마지막에 가미하여 재료의 식감 차이를 극대화합니다.` : "강불에서 속은 촉촉하고 겉은 바삭하게 굽는 '겉바속촉' 기법을 적용합니다.",
+          `손질한 ${names[0]}와(과) ${names[1]}을(를) 소금, 후추로 간하여 준비합니다.`,
+          names[2] ? `${names[2]}을(를) 가미하여 식감의 풍성함을 극대화합니다.` : "강불에서 속은 촉촉하고 겉은 바삭하게 굽는 '겉바속촉' 기법을 적용합니다.",
           "셰프의 감각적인 플레이팅으로 정갈하게 담아 심사위원에게 내놓습니다."
         ];
         pairTitle = "특제 와사비 간장 소스 & 샐러드";
@@ -371,14 +351,7 @@
         pairSteps = ["알싸한 와사비와 간장을 1:2 비율로 섞어 준비합니다.", "구이 요리의 재료에 살짝 찍어먹어 풍미를 완성합니다."];
       }
 
-      return {
-        title: title,
-        emoji: emoji,
-        steps: steps,
-        pairTitle: pairTitle,
-        pairEmoji: pairEmoji,
-        pairSteps: pairSteps
-      };
+      return { title, emoji, steps, pairTitle, pairEmoji, pairSteps };
     }
 
     let selectedIngredients = [];
@@ -435,12 +408,10 @@
     function getRecipe() {
       const sortedKeys = [...selectedIngredients].sort().join(',');
       
-      // Look for exact key match or subset match
       if (DB[sortedKeys]) {
         return DB[sortedKeys];
       }
 
-      // Check subset matches in DB
       for (let key in DB) {
         const keyArr = key.split(',');
         if (keyArr.every(k => selectedIngredients.includes(k))) {
@@ -448,26 +419,16 @@
         }
       }
 
-      // Dynamic custom cooking generation for any strange combination
       const selectedObjs = selectedIngredients.map(id => ingredients.find(item => item.id === id));
-      const generated = generateCreativeRecipe(selectedObjs);
-
-      return {
-        title: generated.title,
-        emoji: generated.emoji,
-        steps: generated.steps,
-        pairTitle: generated.pairTitle,
-        pairEmoji: generated.pairEmoji,
-        pairSteps: generated.pairSteps
-      };
+      return generateCreativeRecipe(selectedObjs);
     }
 
     submitBtn.addEventListener('click', () => {
       const dish = getRecipe();
 
-      document.getElementById('mainEmoji').textContent = dish.emoji || dish.mainEmoji || "🍳";
-      document.getElementById('mainTitle').textContent = dish.title || dish.mainTitle;
-      renderSteps('mainRecipe', dish.steps || dish.mainSteps);
+      document.getElementById('mainEmoji').textContent = dish.emoji || "🍳";
+      document.getElementById('mainTitle').textContent = dish.title;
+      renderSteps('mainRecipe', dish.steps);
 
       document.getElementById('pairEmoji').textContent = dish.pairEmoji;
       document.getElementById('pairTitle').textContent = dish.pairTitle;
